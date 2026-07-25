@@ -1,0 +1,6 @@
+apiVersion: v2
+name: app-mariama-alio
+description: Application GitOps de Mariama ALIO - ESMT
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

@@ -1,0 +1,10 @@
+replicaCount: 2
+image:
+  repository: ghcr.io/1Mariama/app-mariama-alio
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+namespace: mariama-alio
