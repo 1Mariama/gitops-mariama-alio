@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps & run tests
+        run: |
+          cd app
+          pip install -r requirements.txt pytest
+          pytest -v
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint
+        run: helm lint helm-chart/app-mariama-alio/
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: true
+          tags: |
+            ghcr.io/1mariama/app-mariama-alio:latest
+            ghcr.io/1mariama/app-mariama-alio:${{ github.sha }}
