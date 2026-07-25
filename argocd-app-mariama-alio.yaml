@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mariama-alio-release
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/1Mariama/gitops-mariama-alio.git
+    targetRevision: main
+    path: helm-chart/app-mariama-alio
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mariama-alio
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
